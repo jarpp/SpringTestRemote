@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:aop="http://www.springframework.org/schema/aop"
+	xmlns:tx="http://www.springframework.org/schema/tx"
+	xmlns:context="http://www.springframework.org/schema/context"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+		http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-4.3.xsd
+		http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop-4.3.xsd
+		http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx-4.3.xsd">
+		
+	<tx:annotation-driven transaction-manager="transactionManager"/>
+	<!--1、 配置数据源  
+	dataSource
+	driverClassName   url    username   password
+	-->
+	<bean id="dataSource"
+		class="org.springframework.jdbc.datasource.DriverManagerDataSource">
+		<property name="driverClassName"
+			value="com.mysql.jdbc.Driver"></property>
+		<property name="url" value="jdbc:mysql://localhost/spring"></property>
+		<property name="username" value="root"></property>
+		<property name="password" value="123"></property>
+	</bean>
+	
+	<!-- 2、配置JDBC  模板（Template）
+		需要注入数据源
+	 -->
+	<bean id="jdbcTemplate" class="org.springframework.jdbc.core.JdbcTemplate">
+		<property name="dataSource" ref="dataSource"></property>
+	</bean>
+	
+	<!-- 3、配置注入类 
+		AccountDaoImpl处理业务（数据访问层)
+		进行增删改查，基础数据访问层
+	 -->
+	<bean id="accountDao" class="com.lcf.jdbc.AccountDaoImpl">
+		<property name="jdbcTemplate" ref="jdbcTemplate"></property>
+	</bean>
+	
+	
+	<!--4、事务管理器tx，依赖于数据源 
+		transactionManager
+	
+	<bean id="transactionManager"
+	class="org.springframework.jdbc.datasource.DataSourceTransactionManager">
+	<property name="dataSource" ref="dataSource"></property>
+	</bean> -->
+	
+	<!-- 5、编写通知
+	<tx:advice id="txAdvice" transaction-manager="transactionManager"> 
+		<tx:attributes>
+			<tx:method name="*" propagation="REQUIRED"
+					isolation="DEFAULT" read-only="false"/>	
+		</tx:attributes>
+	</tx:advice> -->
+	 
+	 <!-- 6、编写aop切入点
+	 <aop:config>
+	<aop:pointcut
+		expression="execution(* com.lcf.jdbc.*.*(..))" id="txPoingtCut" />
+	<aop:advisor advice-ref="txAdvice" pointcut-ref="txPoingtCut"/>
+	</aop:config> -->
+	
+</beans>
