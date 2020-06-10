@@ -4,7 +4,7 @@ import static org.junit.Assert.assertEquals;
 
 import java.util.Scanner;
 
-//第二版本
+//第二 版本
 public class Aass {
 	public static void main(String[] args) {
 		Scanner reader = new Scanner(System.in);
